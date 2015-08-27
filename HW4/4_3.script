@@ -1,0 +1,29 @@
+/*
+HW4.3, create indexes
+*/
+mongod -dbpath [path] -storageEngine wiredTiger
+
+mongo
+use blog
+var ps = db.posts;
+/* 
+1. The blog home page
+posts.getPosts 
+*/
+ps.createIndex({"date": -1})
+ps.explain("executionStats").find().sort({"date": -1}).limit(10)
+
+/* 
+2. The page that displays blog posts by tag 
+posts.getPostsByTag 
+*/
+ps.createIndex({"tags": 1})
+ps.explain("executionStats").find({"tags" : "vietnam"}).sort({"date": -1}).limit(10)
+
+/* 
+3. The page that displays a blog entry by permalink 
+posts.getPostByPermalink
+*/
+ps.createIndex({"permalink": 1})
+ps.explain("executionStats").find({"permalink" : "mabqteofbqytgnqslkze"},{"_id" : 0, "tags" : 1})
+ps.explain("executionStats").find({"permalink" : "mabqteofbqytgnqslkze"})
